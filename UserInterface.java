@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.Random;
 import javax.swing.*;
 
-public class UserInterface extends JFrame {
+public class MainFrame extends JFrame {
     private JTextArea textArea;
     private Color initialGreenHue;
     private final Random random = new Random(); // For generating random hues
 
-    public UserInterface() {
+    public MainFrame() {
         // Initialize components
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
@@ -89,6 +89,6 @@ public class UserInterface extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new UserInterface().setVisible(true));
+        SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
     }
 }
