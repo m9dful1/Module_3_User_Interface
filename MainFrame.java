@@ -7,11 +7,12 @@ import javax.swing.*;
 public class MainFrame extends JFrame {
     private JTextArea textArea;
     private Color initialGreenHue;
+    private final Random random = new Random(); // For generating random hues
 
     public MainFrame() {
         // Initialize components
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 400);  // Increased size for more visible background
+        setSize(500, 400);
         setLocationRelativeTo(null);
 
         // Menu bar and items
@@ -36,12 +37,12 @@ public class MainFrame extends JFrame {
         // Menu actions
         dateItem.addActionListener(e -> showDateTime());
         saveItem.addActionListener(e -> saveLog());
-        colorItem.addActionListener(e -> changeBackgroundColorAndTextBox());
+        colorItem.addActionListener(e -> changeBackgroundColor());
         exitItem.addActionListener(e -> System.exit(0));
 
-        // Set initial random green hue
+        // Initialize and display initial random green hue
         initialGreenHue = generateRandomGreenColor();
-        colorItem.setText("Change Color (Green Hue)");
+        colorItem.setText(String.format("Change Color (%s)", colorToString(initialGreenHue)));
     }
 
     private void setupTextArea() {
@@ -49,16 +50,21 @@ public class MainFrame extends JFrame {
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(300, 200));  // Smaller than the frame
+        scrollPane.setPreferredSize(new Dimension(300, 200));
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        getContentPane().setLayout(new BorderLayout()); // Ensuring layout is BorderLayout
+        getContentPane().setLayout(new BorderLayout());
         getContentPane().add(scrollPane, BorderLayout.CENTER);
     }
 
     private Color generateRandomGreenColor() {
-        Random random = new Random();
-        float hue = 0.25f + random.nextFloat() * 0.15f;  // Stay within the green spectrum
+        // Generate hue within green spectrum (approximately)
+        float hue = 0.25f + random.nextFloat() * 0.15f;
         return Color.getHSBColor(hue, 1.0f, 1.0f);
+    }
+
+    private String colorToString(Color color) {
+        // Convert color to a string in RGB format
+        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
     }
 
     private void showDateTime() {
@@ -68,20 +74,18 @@ public class MainFrame extends JFrame {
     private void saveLog() {
         try (PrintWriter out = new PrintWriter(new FileWriter("log.txt"))) {
             out.println(textArea.getText());
-            System.out.println("Current working directory: " + System.getProperty("user.dir"));
             JOptionPane.showMessageDialog(this, "Log saved successfully to 'log.txt'.", "Save Successful", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Failed to save log: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void changeBackgroundColorAndTextBox() {
-        Color newColor = generateRandomGreenColor();
-        getContentPane().setBackground(newColor);
-        textArea.setBackground(newColor.darker());
-        textArea.setForeground(Color.WHITE);
-        repaint();
-        revalidate();
+    private void changeBackgroundColor() {
+        // Apply the initial random green hue
+        getContentPane().setBackground(initialGreenHue);
+        textArea.setBackground(initialGreenHue);
+        textArea.setForeground(Color.WHITE); // Set text color to white for better visibility
+        repaint(); // Ensure UI updates correctly
     }
 
     public static void main(String[] args) {
